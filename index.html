@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display All Records</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; /* Full viewport height */
+            background-color: #f9f9f9; /* Light background color */
+            color: #333;
+            font-size: 18px; /* Increased base font size */
+        }
+        .container {
+            width: 100%; /* Full width of the viewport */
+            max-width: 1200px; /* Maximum width for large screens */
+            height: 90%; /* 90% of the viewport height */
+            display: flex;
+            flex-direction: column; /* Stack items vertically */
+            justify-content: flex-start; /* Align items to the top */
+            align-items: center; /* Center horizontally */
+            position: relative; /* Positioning for children */
+            padding: 20px; /* Padding around the content */
+            overflow: auto; /* Allow scrolling if content exceeds height */
+        }
+        h1 {
+            font-size: 28px; /* Increased heading font size */
+            color: rgb(94, 22, 117); /* Updated heading color */
+            background-color: rgba(255, 255, 255, 0.7); /* Slight background for readability */
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px; /* Space between heading and table */
+            text-align: center; /* Center the heading text */
+            width: 100%; /* Full width */
+        }
+        .table-container {
+            width: 100%; /* Full width */
+            overflow-x: auto; /* Enable horizontal scrolling */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%; /* Full width */
+            margin-top: 20px; /* Space between heading and table */
+        }
+        th, td {
+            border: 1px solid rgb(94, 22, 117);
+            padding: 12px; /* Increased padding for better spacing */
+            text-align: left; /* Align text to the left */
+            font-size: 16px; /* Set a smaller font size for table cells */
+        }
+        th {
+            background-color: rgb(94, 22, 117);
+            color: white;
+        }
+        tr:hover {
+            background-color: rgba(94, 22, 117, 0.1);
+        }
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 24px; /* Smaller heading on mobile */
+            }
+            table {
+                font-size: 14px; /* Smaller table font size */
+            }
+            th, td {
+                padding: 10px; /* Reduced padding for smaller screens */
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                font-size: 16px; /* Further reduce base font size */
+            }
+            h1 {
+                font-size: 22px; /* Smaller heading on very small screens */
+            }
+            table {
+                font-size: 12px; /* Further reduce table font size */
+            }
+            th, td {
+                padding: 8px; /* Further reduced padding for smaller screens */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Display All Records</h1>
+        <div class="table-container">
+            <table id="data-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>Subject</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- Data from Google Sheets will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const sheetId = "2PACX-1vSejsLu2omHiETXk-lG_NWjPptQiVoEpizKumeXtnQSQn7FIJN780JaCyat6oojTo0e23Pz8oVVAxzh"; // Google Sheets ID
+        const url = `https://docs.google.com/spreadsheets/d/e/${sheetId}/pub?output=csv`;
+
+        fetch(url)
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1); // Split data into rows and remove the header
+                const tableBody = document.getElementById('table-body');
+
+                rows.forEach(row => {
+                    const cells = row.split(',');
+                    if (cells.length >= 5) { // Check if there are enough cells
+                        const tr = document.createElement('tr');
+                        cells.forEach(cell => {
+                            const td = document.createElement('td');
+                            td.textContent = cell.trim(); // Add cell data
+                            tr.appendChild(td);
+                        });
+                        tableBody.appendChild(tr);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+            });
+    </script>
+</body>
+</html>
